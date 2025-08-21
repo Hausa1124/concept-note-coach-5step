@@ -1,5 +1,7 @@
+import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { FormProvider } from "./context/FormContext";
+import "./styles/app.css";
 import LiveOutline from "./ui/LiveOutline";
 import Step1_Basics from "./pages/Step1_Basics";
 import Step2_Problem from "./pages/Step2_Problem";
@@ -11,11 +13,11 @@ import Final_Analysis from "./pages/Final_Analysis";
 export default function App() {
   return (
     <FormProvider>
-      <div className="app-layout">
-        <aside className="live-outline">
+      <div className="layout">
+        <aside className="outline">
           <LiveOutline />
         </aside>
-        <main className="step-content">
+        <main className="stage">
           <Routes>
             <Route path="/" element={<Step1_Basics />} />
             <Route path="/problem" element={<Step2_Problem />} />
