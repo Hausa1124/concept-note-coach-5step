@@ -1,41 +1,37 @@
-:root{
-  --bg:#0b0d12;            /* near black */
-  --blue-900:#0b1328;
-  --blue-800:#0d1f3a;
-  --rim:#f7fbff;           /* white rim glow */
-  --panel:#0f172a;         /* dark slate card */
-  --text:#e5e7eb;          /* light text */
-  --muted:#94a3b8;
-  --border:#1f2937;
-  --radius:14px;
-  --shadow:0 10px 30px rgba(0,0,0,.35);
+:root {
+  --bg: #0b0d12;
+  --text: #e5e7eb;
+  --accent: #10b981;
+  --card: #1a1c23;
+  --border: #2d2f36;
+  --muted: #9ca3af;
 }
 
-html,body{margin:0;background:var(--bg);color:var(--text);
-  font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Arial;}
-.container{max-width:1200px;margin:0 auto;padding:24px;}
-.card{background:var(--panel);border:1px solid var(--border);
-  border-radius:var(--radius);box-shadow:var(--shadow);}
-.input,select,textarea{width:100%;padding:14px 16px;border:1px solid #334155;
-  border-radius:10px;background:#0b1220;color:var(--text);}
-.label{font-weight:600;margin-bottom:8px;display:block;}
-.hint{color:var(--muted);font-size:.9rem;}
-.btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;
-  border:1px solid var(--border);padding:12px 16px;background:#111827;color:#e5e7eb;}
-.btn-primary{background:#2563eb;border-color:#2563eb;color:#fff;}
-.btn-ghost{background:transparent;border-color:#334155;}
-.section-title{font-size:1.15rem;margin:0 0 16px;}
-.app-title{font-size:1.8rem;margin:0;}
-.subtitle{color:#b6c2d1;margin:6px 0 16px;}
-
-/* Bolt-like gradient background + split */
-.grad-bg{
-  background:
-    radial-gradient(1200px 120px at 50% 100%, var(--rim), transparent 40%),
-    radial-gradient(800px 300px at 50% 100%, #0ea5e966, transparent 55%),
-    linear-gradient(180deg, #000 0%, var(--blue-900) 40%, var(--blue-800) 100%);
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, sans-serif;
 }
-.split{display:grid;grid-template-columns:380px 1fr;min-height:80vh;border-radius:var(--radius);overflow:hidden;}
-.left-rail{background:linear-gradient(180deg,#0b1220, #07101b);padding:28px 22px;border-right:1px solid #132032;}
-.right-pane{background:rgba(2,6,23,.55);backdrop-filter: blur(4px);padding:28px;}
-.outline-group{margin:16px 0;padding:12px 14px;border:1px dashed #1f2b3c;border-radius:10px;background:#0b1220;}
+
+button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
