@@ -1,6 +1,6 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "../context/FormContext";
-import { useState } from "react";
 
 export default function Step5_Review() {
   const nav = useNavigate();
@@ -8,41 +8,65 @@ export default function Step5_Review() {
   const [busy, setBusy] = useState(false);
 
   async function submit() {
-    setBusy(true);
     try {
-      const r = await fetch("/.netlify/functions/submit", {
+      setBusy(true);
+      const res = await fetch("/.netlify/functions/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ form: data }),
       });
-      const json = await r.json();
-      const msg = json.ok
-        ? "Submitted!"
-        : "Submit failed: " + String(json.data).slice(0, 200);
-      alert(msg);
+      const json = await res.json();
+      if (json.ok) {
+        alert("Submitted!");
+      } else {
+        const msg = String(json.data ?? "");
+        alert(`Submit failed: ${msg.slice(0, 200)}`);
+      }
     } catch (e: any) {
-      alert("Network error: " + (e?.message || e));
+      alert(`Network error: ${e?.message ?? e}`);
     } finally {
       setBusy(false);
     }
   }
 
   return (
-    <div style={{ padding: 24, maxWidth: 900, margin: "0 auto" }}>
+    <div style={{ maxWidth: 960, margin: "60px auto", padding: 16 }}>
+      <h1>Concept Note Coach</h1>
       <h2>Step 5 of 5 — Review & Submit</h2>
-      <div style={{ display: "grid", gap: 8 }}>
-        <div><strong>Title:</strong> {data.title || "(none)"} </div>
-        <div><strong>Region:</strong> {data.region || "(none)"} </div>
-        <div><strong>Donor:</strong> {data.donor || "(none)"} </div>
-        <div><strong>Problem:</strong><br /> {data.problem || "(none)"} </div>
-        <div><strong>Objectives & Outputs:</strong><br /> {data.objectives || "(none)"} </div>
-        <div><strong>Beneficiaries:</strong><br /> {data.beneficiaries || "(none)"} </div>
+
+      {/* Simple review block */}
+      <div style={{ padding: "12px 16px", border: "1px solid #ddd", borderRadius: 8, margin: "0 0 16px" }}>
+        <h3 style={{ marginTop: 0 }}>Please review your details</h3>
+        <ul>
+          <li><strong>Title:</strong> {data.title || "—"}</li>
+          <li><strong>Country & Region:</strong> {data.countryRegion || "—"}</li>
+          <li><strong>Organization:</strong> {data.organization || "—"}</li>
+          <li><strong>Budget:</strong> {data.budget || "—"}</li>
+          <li><strong>Duration:</strong> {data.duration || "—"}</li>
+        </ul>
+
+        {/* Optional: show more fields if you collected them in earlier steps */}
+        {data.problem && (
+          <>
+            <h4>Problem</h4>
+            <p style={{ whiteSpace: "pre-wrap" }}>{data.problem}</p>
+          </>
+        )}
+        {data.overallObjective && (
+          <>
+            <h4>Overall Objective</h4>
+            <p style={{ whiteSpace: "pre-wrap" }}>{data.overallObjective}</p>
+          </>
+        )}
+        {/* Add more preview items as you like */}
       </div>
 
-      <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
-        <button onClick={() => nav(-1)}>Previous</button>
-        <button onClick={submit} disabled={busy}>
-          {busy ? "Submitting…" : "Submit to Make"}
+      <div style={{ display: "flex", gap: 12 }}>
+        <button type="button" onClick={() => nav(-1)} disabled={busy} style={{ height: 44 }}>
+          ← Back
+        </button>
+        <button type="button" onClick={submit} disabled={busy} style={{ height: 44 }}>
+          {busy ? "Submitting…" : "Submit"}
         </button>
       </div>
     </div>
