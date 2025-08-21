@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { FormProvider } from "./context/FormContext";
+import LiveOutline from "./ui/LiveOutline";
 import Step1_Basics from "./pages/Step1_Basics";
 import Step2_Problem from "./pages/Step2_Problem";
 import Step3_Objectives from "./pages/Step3_Objectives";
@@ -10,14 +11,21 @@ import Results from "./pages/Results";
 export default function App() {
   return (
     <FormProvider>
-      <Routes>
-        <Route path="/" element={<Step1_Basics />} />
-        <Route path="/problem" element={<Step2_Problem />} />
-        <Route path="/objectives" element={<Step3_Objectives />} />
-        <Route path="/beneficiaries" element={<Step4_Beneficiaries />} />
-        <Route path="/review" element={<Step5_Review />} />
-        <Route path="/results" element={<Results />} />
-      </Routes>
+      <div className="app-layout">
+        <aside className="live-outline">
+          <LiveOutline />
+        </aside>
+        <main className="step-content">
+          <Routes>
+            <Route path="/" element={<Step1_Basics />} />
+            <Route path="/problem" element={<Step2_Problem />} />
+            <Route path="/objectives" element={<Step3_Objectives />} />
+            <Route path="/beneficiaries" element={<Step4_Beneficiaries />} />
+            <Route path="/review" element={<Step5_Review />} />
+            <Route path="/results" element={<Results />} />
+          </Routes>
+        </main>
+      </div>
     </FormProvider>
   );
 }
