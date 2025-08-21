@@ -195,6 +195,22 @@ textarea {
   font-style: italic;
 }
 
+/* Review sections */
+.review-section {
+  background: var(--bg-secondary);
+  padding: 16px;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+.review-section > div {
+  margin-bottom: 8px;
+}
+
+.review-section > div:last-child {
+  margin-bottom: 0;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .app-layout {
