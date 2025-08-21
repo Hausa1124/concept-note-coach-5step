@@ -6,20 +6,38 @@ export default function Step3_Objectives() {
   const { data, set } = useForm();
 
   return (
-    <div style={{ padding: 24, maxWidth: 800, margin: "0 auto" }}>
-      <h2>Step 3 of 5 — Objectives & Outputs</h2>
+    <div style={{ maxWidth: 960, margin: "60px auto", padding: 16 }}>
+      <h1>Concept Note Coach</h1>
+      <h2>Step 3 of 5 — Objectives</h2>
 
-      <textarea
-        style={{ display: "block", width: "100%", minHeight: 180, padding: 8 }}
-        value={data.objectives}
-        onChange={(e) => set("objectives", e.target.value)}
-        placeholder="SMART objectives + expected outputs (bullets ok)."
-      />
+      <form onSubmit={(e) => e.preventDefault()}>
+        <label>Overall Objective</label>
+        <textarea
+          rows={4}
+          value={data.overallObjective ?? ""}
+          onChange={(e) => set("overallObjective", e.target.value)}
+          style={{ width: "100%", margin: "6px 0 18px" }}
+          placeholder="High-level change your project contributes to…"
+        />
 
-      <div style={{ display: "flex", gap: 12, marginTop: 16 }}>
-        <button onClick={() => nav(-1)}>Previous</button>
-        <button onClick={() => nav("/beneficiaries")}>Next</button>
-      </div>
+        <label>Specific Objectives</label>
+        <textarea
+          rows={6}
+          value={data.specificObjectives ?? ""}
+          onChange={(e) => set("specificObjectives", e.target.value)}
+          style={{ width: "100%", margin: "6px 0 24px" }}
+          placeholder="Bulleted or numbered list works great…"
+        />
+
+        <div style={{ display: "flex", gap: 12 }}>
+          <button type="button" onClick={() => nav(-1)} style={{ height: 44 }}>
+            ← Back
+          </button>
+          <button type="button" onClick={() => nav("/beneficiaries")} style={{ height: 44 }}>
+            Next: Beneficiaries →
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
