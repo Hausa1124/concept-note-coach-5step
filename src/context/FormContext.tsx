@@ -1,83 +1,13 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
-/** ====== Data shape (UI-only; all strings) ====== */
-export interface CoachForm {
-  // Step 1 — Basics
-  title: string;
-  countryRegion: string;
-  organization: string;
-  budget: string;
-  duration: string;
-
-  // NEW: Sector & Donor (with "Other")
-  sector: string;          // "Health" | "Education" | "WASH" | "Agriculture" | "Economic Development" | "Other" | ""
-  sectorOther?: string;    // when sector === "Other"
-  donorChoice: string;     // "EU" | "USAID" | "FAO" | "WHO" | "World Bank" | "Other" | ""
-  donorOther?: string;     // when donorChoice === "Other"
-
-  // Step 2 — Problem
-  problem: string;
-  rootCauses: string;
-  evidence: string;
-  problemConsequence?: string;
-
-  // Step 3 — Objectives
-  overallObjective: string;
-  specificObjectives: string;
-
-  // Step 4 — Beneficiaries (and misc that may feed Make)
-  targetGroups: string;
-  directBeneficiaries: string;
-  indirectBeneficiaries: string;
-
-  // Optional fields some flows use
-  activities?: string;
-  expectedResults?: string;
-  timeline?: string;
-  budgetNotes?: string;
-  partners?: string;
-}
-
-/** ====== Defaults ====== */
-const defaultData: CoachForm = {
-  title: "",
-  countryRegion: "",
-  organization: "",
-  budget: "",
-  duration: "",
-
-  sector: "",
-  sectorOther: "",
-  donorChoice: "",
-  donorOther: "",
-
-  problem: "",
-  rootCauses: "",
-  evidence: "",
-  problemConsequence: "",
-
-  overallObjective: "",
-  specificObjectives: "",
-
-  targetGroups: "",
-  directBeneficiaries: "",
-  indirectBeneficiaries: "",
-
-  activities: "",
-  expectedResults: "",
-  timeline: "",
-  budgetNotes: "",
-  partners: ""
-};
-
-/** ====== Option lists for dropdowns ====== */
+// Reusable options
 export const SECTOR_OPTIONS = [
   "Health",
   "Education",
   "WASH",
   "Agriculture",
   "Economic Development",
-  "Other"
+  "Other",
 ] as const;
 
 export const DONOR_OPTIONS = [
@@ -86,38 +16,77 @@ export const DONOR_OPTIONS = [
   "FAO",
   "WHO",
   "World Bank",
-  "Other"
+  "Other",
 ] as const;
 
-/** ====== Context ====== */
-type FormContextValue = {
-  form: CoachForm;
-  setForm: React.Dispatch<React.SetStateAction<CoachForm>>;
-  // alias used by pages (so we don't need to change them)
-  set: <K extends keyof CoachForm>(key: K, value: CoachForm[K]) => void;
+type Sector = (typeof SECTOR_OPTIONS)[number] | "";
+type Donor  = (typeof DONOR_OPTIONS)[number]  | "";
+
+// Avoid clash with DOM FormData
+export type CoachForm = {
+  title: string;
+  countryRegion: string;
+  organization: string;
+  budget: string;
+  duration: string;
+  sector: Sector;
+  sectorOther?: string;
+  donorChoice: Donor;
+  donorOther?: string;
+  // Step 2 fields already referenced in your UI:
+  problem?: string;
+  causes?: string;
+  evidence?: string;
+  [key: string]: any;
+};
+
+type FormContextType = {
+  data: CoachForm;
+  setValue: <K extends keyof CoachForm>(key: K, value: CoachForm[K]) => void;
+  set: <K extends keyof CoachForm>(key: K, value: CoachForm[K]) => void; // alias
   reset: () => void;
 };
 
-const FormContext = createContext<FormContextValue | null>(null);
+const defaultData: CoachForm = {
+  title: "",
+  countryRegion: "",
+  organization: "",
+  budget: "",
+  duration: "",
+  sector: "",
+  sectorOther: "",
+  donorChoice: "",
+  donorOther: "",
+  problem: "",
+  causes: "",
+  evidence: "",
+};
 
-export function FormProvider({ children }: { children: ReactNode }) {
-  const [form, setForm] = useState<CoachForm>(defaultData);
+export const FormContext = createContext<FormContextType>({
+  data: defaultData,
+  setValue: () => {},
+  set: () => {},
+  reset: () => {},
+});
 
-  const set = <K extends keyof CoachForm>(key: K, value: CoachForm[K]) => {
-    setForm(prev => ({ ...prev, [key]: (value ?? "") as CoachForm[K] }));
-  };
+export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [data, setData] = useState<CoachForm>(defaultData);
 
-  const reset = () => setForm(defaultData);
+  const setValue = <K extends keyof CoachForm>(key: K, value: CoachForm[K]) =>
+    setData((prev) => ({ ...prev, [key]: value }));
+
+  // alias to match pages that call `set(...)`
+  const set: typeof setValue = (key, value) => setValue(key, value);
+
+  const reset = () => setData({ ...defaultData }); // clone to avoid shared reference
 
   return (
-    <FormContext.Provider value={{ form, setForm, set, reset }}>
+    <FormContext.Provider value={{ data, setValue, set, reset }}>
       {children}
     </FormContext.Provider>
   );
-}
+};
 
-export function useFormContext() {
-  const ctx = useContext(FormContext);
-  if (!ctx) throw new Error("useFormContext must be used within FormProvider");
-  return ctx;
-}
+// ✅ Named export used by:  ../ui/LiveOutline  and  ../pages/Step1_Basics
+export const useForm = () => useContext(FormContext);
+
