@@ -1,41 +1,52 @@
-
 import React, { createContext, useContext, useState } from "react";
 
-export type FormData = {
+// Rename away from DOM FormData to avoid collisions
+export type CoachForm = {
   title: string;
-  region: string;
-  donor: string;
-  problem: string;
-  objectives: string;
-  beneficiaries: string;
+  countryRegion: string;
+  organization: string;
+  budget: string;
+  duration: string;
+
+  // other steps can add more; the index keeps TypeScript happy for any extra keys
+  [key: string]: any;
 };
 
-const initialData: FormData = {
+type FormContextType = {
+  data: CoachForm;
+  setValue: <K extends keyof CoachForm>(key: K, value: CoachForm[K]) => void;
+  reset: () => void;
+};
+
+const defaultData: CoachForm = {
   title: "",
-  region: "",
-  donor: "",
-  problem: "",
-  objectives: "",
-  beneficiaries: "",
+  countryRegion: "",
+  organization: "",
+  budget: "",
+  duration: "",
 };
 
-type Ctx = {
-  data: FormData;
-  set<K extends keyof FormData>(key: K, value: FormData[K]): void;
+const FormContext = createContext<FormContextType>({
+  data: defaultData,
+  // no-ops for initial context default
+  setValue: () => {},
+  reset: () => {},
+});
+
+export const FormProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [data, setData] = useState<CoachForm>(defaultData);
+
+  const setValue = (key: keyof CoachForm, value: CoachForm[keyof CoachForm]) => {
+    setData((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const reset = () => setData(defaultData);
+
+  return (
+    <FormContext.Provider value={{ data, setValue, reset }}>
+      {children}
+    </FormContext.Provider>
+  );
 };
 
-const FormContext = createContext<Ctx | null>(null);
-
-export function FormProvider({ children }: { children: React.ReactNode }) {
-  const [data, setData] = useState<FormData>(initialData);
-  function set<K extends keyof FormData>(key: K, value: FormData[K]) {
-    setData((d) => ({ ...d, [key]: value }));
-  }
-  return <FormContext.Provider value={{ data, set }}>{children}</FormContext.Provider>;
-}
-
-export function useForm() {
-  const ctx = useContext(FormContext);
-  if (!ctx) throw new Error("useForm must be used inside <FormProvider>");
-  return ctx;
-}
+export const useForm = () => useContext(FormContext);
