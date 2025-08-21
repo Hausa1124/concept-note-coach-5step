@@ -1,5 +1,24 @@
 import React, { createContext, useContext, useState } from "react";
 
+// Reusable options
+export const SECTOR_OPTIONS = [
+  "Health",
+  "Education",
+  "WASH",
+  "Agriculture",
+  "Economic Development",
+  "Other"
+] as const;
+
+export const DONOR_OPTIONS = [
+  "EU",
+  "USAID",
+  "FAO",
+  "WHO",
+  "World Bank",
+  "Other"
+] as const;
+
 // Avoid clash with DOM FormData
 export type CoachForm = {
   title: string;
@@ -7,6 +26,10 @@ export type CoachForm = {
   organization: string;
   budget: string;
   duration: string;
+  sector: string;
+  sectorOther?: string;
+  donorChoice: string;
+  donorOther?: string;
   [key: string]: any;
 };
 
@@ -25,6 +48,10 @@ const defaultData: CoachForm = {
   organization: "",
   budget: "",
   duration: "",
+  sector: "",
+  sectorOther: "",
+  donorChoice: "",
+  donorOther: "",
 };
 
 const FormContext = createContext<FormContextType>({
