@@ -41,7 +41,11 @@ export type CoachForm = {
   evidence: string;
 
   // Step 3: Objectives
-  objectives: string[];
+  objectives: Array<{
+    type: string;
+    text: string;
+    example: boolean;
+  }>;
 
   // Step 4: Beneficiaries
   beneficiaries: {
@@ -50,9 +54,17 @@ export type CoachForm = {
     indirect: string;
   };
 
-  // Step 5: Summary / Final
+  // Step 5: Summary
   summaryDraft: string;
   finalAnalysis: string;
+
+  // Additional fields referenced by components
+  rootCauses: string;
+  overallObjective: string;
+  specificObjectives: string;
+  targetGroups: string;
+  directBeneficiaries: string;
+  indirectBeneficiaries: string;
 };
 
 type FormContextType = {
@@ -63,6 +75,7 @@ type FormContextType = {
 };
 
 const defaultData: CoachForm = {
+  }
   title: "",
   countryRegion: "",
   organization: "",
@@ -83,6 +96,12 @@ const defaultData: CoachForm = {
   },
   summaryDraft: "",
   finalAnalysis: "",
+  rootCauses: "",
+  overallObjective: "",
+  specificObjectives: "",
+  targetGroups: "",
+  directBeneficiaries: "",
+  indirectBeneficiaries: "",
 };
 
 export const FormContext = createContext<FormContextType>({
@@ -112,3 +131,5 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 // Named export used by components
 export const useForm = () => useContext(FormContext);
+
+}
