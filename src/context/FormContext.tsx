@@ -63,7 +63,6 @@ type FormContextType = {
 };
 
 const defaultData: CoachForm = {
-  }
   title: "",
   countryRegion: "",
   organization: "",
@@ -113,5 +112,3 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 // Named export used by components
 export const useForm = () => useContext(FormContext);
-
-}
