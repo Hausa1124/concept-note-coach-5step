@@ -93,4 +93,22 @@ export const FormContext = createContext<FormContextType>({
 });
 
 export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const
+  const [data, setData] = useState<CoachForm>(defaultData);
+
+  const setValue = <K extends keyof CoachForm>(key: K, value: CoachForm[K]) =>
+    setData((prev) => ({ ...prev, [key]: value }));
+
+  // alias to match pages that call `set(...)`
+  const set: typeof setValue = (key, value) => setValue(key, value);
+
+  const reset = () => setData({ ...defaultData }); // clone to avoid shared reference
+
+  return (
+    <FormContext.Provider value={{ data, setValue, set, reset }}>
+      {children}
+    </FormContext.Provider>
+  );
+};
+
+// Named export used by components
+export const useForm = () => useContext(FormContext);
