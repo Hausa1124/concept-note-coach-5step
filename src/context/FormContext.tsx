@@ -43,6 +43,7 @@ type FormContextType = {
 };
 
 const defaultData: CoachForm = {
+  }
   title: "",
   countryRegion: "",
   organization: "",
