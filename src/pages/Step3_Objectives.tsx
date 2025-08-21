@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "../context/FormContext";
 import { SECTOR_OBJECTIVES, DONOR_GUIDANCE } from "../data/objectiveMappings";
+import { polishText } from "../utils/polishText";
 
 type Objective = {
   type: string;
@@ -12,6 +13,7 @@ type Objective = {
 export default function Step3_Objectives() {
   const nav = useNavigate();
   const { data, set } = useForm();
+  const [polishing, setPolishing] = useState<string | null>(null);
 
   // Pre-seed objectives based on sector on mount
   useEffect(() => {
@@ -40,6 +42,22 @@ export default function Step3_Objectives() {
   const removeObjective = (index: number) => {
     const filtered = data.objectives.filter((_, i) => i !== index);
     set("objectives", filtered);
+  };
+
+  const handleObjectiveBlur = async (index: number, value: string) => {
+    if (!value.trim() || value.length < 6) return;
+    
+    setPolishing(`objective-${index}`);
+    try {
+      const polished = await polishText(value);
+      if (polished !== value) {
+        updateObjective(index, 'text', polished);
+      }
+    } catch (error) {
+      console.error('Polish failed:', error);
+    } finally {
+      setPolishing(null);
+    }
   };
 
   const donorGuidance = data.donorChoice && data.donorChoice !== 'Other' 
@@ -127,9 +145,16 @@ export default function Step3_Objectives() {
                 rows={2}
                 value={objective.text}
                 onChange={(e) => updateObjective(index, 'text', e.target.value)}
+                onBlur={(e) => handleObjectiveBlur(index, e.target.value)}
                 placeholder="Describe the objective..."
                 style={{ marginBottom: 0 }}
+                disabled={polishing === `objective-${index}`}
               />
+              {polishing === `objective-${index}` && (
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+                  ✨ Polishing grammar...
+                </div>
+              )}
             </div>
           ))}
 

@@ -9,7 +9,7 @@ export default function Step2_Problem() {
   const [polishing, setPolishing] = useState<string | null>(null);
 
   const handleBlurWithPolish = async (field: 'problem' | 'causes' | 'evidence', value: string) => {
-    if (!value.trim()) return;
+    if (!value.trim() || value.length < 6) return;
     
     setPolishing(field);
     try {
