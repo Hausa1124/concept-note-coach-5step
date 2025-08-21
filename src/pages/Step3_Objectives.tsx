@@ -1,54 +1,159 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "../context/FormContext";
-import AppShell from "../ui/AppShell";
-import LiveOutline from "../ui/LiveOutline";
+import { SECTOR_OBJECTIVES, DONOR_GUIDANCE } from "../data/objectiveMappings";
+
+type Objective = {
+  type: string;
+  text: string;
+  example: boolean;
+};
 
 export default function Step3_Objectives() {
   const nav = useNavigate();
   const { data, set } = useForm();
 
+  // Pre-seed objectives based on sector on mount
+  useEffect(() => {
+    if (data.sector && data.objectives.length === 0) {
+      const suggestions = SECTOR_OBJECTIVES[data.sector as keyof typeof SECTOR_OBJECTIVES] || SECTOR_OBJECTIVES.Other;
+      set("objectives", [...suggestions]);
+    }
+  }, [data.sector, data.objectives.length, set]);
+
+  const addObjective = () => {
+    const newObjective: Objective = {
+      type: "Output",
+      text: "",
+      example: false,
+    };
+    set("objectives", [...data.objectives, newObjective]);
+  };
+
+  const updateObjective = (index: number, field: keyof Objective, value: string | boolean) => {
+    const updated = data.objectives.map((obj, i) => 
+      i === index ? { ...obj, [field]: value } : obj
+    );
+    set("objectives", updated);
+  };
+
+  const removeObjective = (index: number) => {
+    const filtered = data.objectives.filter((_, i) => i !== index);
+    set("objectives", filtered);
+  };
+
+  const donorGuidance = data.donorChoice && data.donorChoice !== 'Other' 
+    ? DONOR_GUIDANCE[data.donorChoice as keyof typeof DONOR_GUIDANCE]
+    : null;
+
   return (
-    <AppShell
-      title="Concept Note Coach"
-      subtitle="Clean, donor-ready structure. Powered by your inputs."
-      step={3}
-      total={5}
-      outline={<LiveOutline />}
-    >
-      <h2 className="section-title">Step 3 of 5 — Objectives</h2>
+    <div className="card">
+      <h2>Step 3 of 5 — Objectives & Outcomes</h2>
+
+      {donorGuidance && (
+        <div style={{ 
+          background: 'var(--bg-secondary)', 
+          padding: '12px 16px', 
+          borderRadius: '8px', 
+          marginBottom: '24px',
+          fontSize: '0.875rem',
+          color: 'var(--text-secondary)'
+        }}>
+          <strong>{data.donorChoice} Guidance:</strong> {donorGuidance}
+        </div>
+      )}
 
       <form onSubmit={(e) => e.preventDefault()}>
-        <label className="label">Overall Objective</label>
-        <textarea
-          className="input"
-          rows={4}
-          value={data.overallObjective ?? ""}
-          onChange={(e) => set("overallObjective", e.target.value)}
-          style={{ margin: "6px 0 18px" }}
-          placeholder="High-level change your project contributes to…"
-        />
-
-        <label className="label">Specific Objectives</label>
-        <textarea
-          className="input"
-          rows={6}
-          value={data.specificObjectives ?? ""}
-          onChange={(e) => set("specificObjectives", e.target.value)}
-          style={{ margin: "6px 0 24px" }}
-          placeholder="Bulleted or numbered list works great…"
-        />
-
-        <div style={{position:'sticky', bottom:-28, background:'linear-gradient(180deg, transparent 0%, rgba(2,6,23,.85) 40%)', paddingTop:16, marginTop:24}}>
-          <div style={{display:'flex', justifyContent:'space-between', gap:12}}>
-            <button type="button" className="btn btn-ghost" onClick={() => nav(-1)}>
-              ← Back
-            </button>
-            <button type="button" className="btn btn-primary" onClick={() => nav("/beneficiaries")}>
-              Next: Beneficiaries →
+        <div className="form-group">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+            <label style={{ margin: 0 }}>Project Objectives</label>
+            <button 
+              type="button" 
+              className="btn btn-secondary"
+              onClick={addObjective}
+              style={{ padding: '8px 16px', fontSize: '0.8125rem' }}
+            >
+              + Add Objective
             </button>
           </div>
+
+          {data.objectives.map((objective, index) => (
+            <div key={index} style={{ 
+              border: '1px solid var(--border-light)', 
+              borderRadius: '8px', 
+              padding: '16px', 
+              marginBottom: '12px',
+              background: objective.example ? 'var(--bg-secondary)' : 'var(--bg-tertiary)'
+            }}>
+              <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
+                <select
+                  value={objective.type}
+                  onChange={(e) => updateObjective(index, 'type', e.target.value)}
+                  style={{ width: '120px' }}
+                >
+                  <option value="Outcome">Outcome</option>
+                  <option value="Output">Output</option>
+                  <option value="Impact">Impact</option>
+                </select>
+                
+                {objective.example && (
+                  <span style={{ 
+                    fontSize: '0.75rem', 
+                    color: 'var(--accent-blue)', 
+                    alignSelf: 'center',
+                    fontWeight: '500'
+                  }}>
+                    ✨ Suggested
+                  </span>
+                )}
+                
+                <button
+                  type="button"
+                  onClick={() => removeObjective(index)}
+                  style={{ 
+                    marginLeft: 'auto',
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--text-muted)',
+                    cursor: 'pointer',
+                    padding: '4px'
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+              
+              <textarea
+                rows={2}
+                value={objective.text}
+                onChange={(e) => updateObjective(index, 'text', e.target.value)}
+                placeholder="Describe the objective..."
+                style={{ marginBottom: 0 }}
+              />
+            </div>
+          ))}
+
+          {data.objectives.length === 0 && (
+            <div style={{ 
+              textAlign: 'center', 
+              padding: '32px', 
+              color: 'var(--text-muted)',
+              fontStyle: 'italic'
+            }}>
+              No objectives yet. Click "Add Objective" to get started.
+            </div>
+          )}
+        </div>
+
+        <div className="nav-buttons">
+          <button type="button" className="btn btn-ghost" onClick={() => nav(-1)}>
+            ← Back
+          </button>
+          <button type="button" className="btn btn-primary" onClick={() => nav("/beneficiaries")}>
+            Next: Beneficiaries →
+          </button>
         </div>
       </form>
-    </AppShell>
+    </div>
   );
 }
