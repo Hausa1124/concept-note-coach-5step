@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 // Reusable options
 export const SECTOR_OPTIONS = [
   "Health",
-  "Education",
+  "Education", 
   "WASH",
   "Agriculture",
   "Economic Development",
@@ -13,17 +13,18 @@ export const SECTOR_OPTIONS = [
 export const DONOR_OPTIONS = [
   "EU",
   "USAID",
-  "FAO",
+  "FAO", 
   "WHO",
   "World Bank",
   "Other",
 ] as const;
 
 type Sector = (typeof SECTOR_OPTIONS)[number] | "";
-type Donor  = (typeof DONOR_OPTIONS)[number]  | "";
+type Donor = (typeof DONOR_OPTIONS)[number] | "";
 
-// Avoid clash with DOM FormData
+// Complete form structure
 export type CoachForm = {
+  // Step 1: Project Basics
   title: string;
   countryRegion: string;
   organization: string;
@@ -33,11 +34,25 @@ export type CoachForm = {
   sectorOther?: string;
   donorChoice: Donor;
   donorOther?: string;
-  // Step 2 fields already referenced in your UI:
-  problem?: string;
-  causes?: string;
-  evidence?: string;
-  [key: string]: any;
+  
+  // Step 2: Problem Analysis
+  problem: string;
+  causes: string;
+  evidence: string;
+  
+  // Step 3: Objectives
+  objectives: string[];
+  
+  // Step 4: Beneficiaries
+  beneficiaries: {
+    targetGroups: string;
+    direct: string;
+    indirect: string;
+  };
+  
+  // Step 5: Summary
+  summaryDraft: string;
+  finalAnalysis: string;
 };
 
 type FormContextType = {
@@ -60,6 +75,14 @@ const defaultData: CoachForm = {
   problem: "",
   causes: "",
   evidence: "",
+  objectives: [],
+  beneficiaries: {
+    targetGroups: "",
+    direct: "",
+    indirect: "",
+  },
+  summaryDraft: "",
+  finalAnalysis: "",
 };
 
 export const FormContext = createContext<FormContextType>({
@@ -87,6 +110,5 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   );
 };
 
-// ✅ Named export used by:  ../ui/LiveOutline  and  ../pages/Step1_Basics
+// Named export used by components
 export const useForm = () => useContext(FormContext);
-
