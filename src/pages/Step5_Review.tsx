@@ -19,7 +19,18 @@ export default function Step5_Review() {
       });
       const json = await res.json();
       if (json.ok) {
-        alert("Submitted!");
+        // If Make returns a structured body under json.data, store it for Results
+        try {
+          // Accept either a JSON string or already-parsed object
+          const payload = typeof json.data === 'string' ? JSON.parse(json.data) : json.data;
+          sessionStorage.setItem('cnc_result', JSON.stringify(payload));
+        } catch {
+          // Fall back to using the current form; Results.tsx already handles fallback
+          sessionStorage.removeItem('cnc_result');
+        }
+
+        // navigate to results
+        window.location.href = '/results';
       } else {
         const msg = String(json.data ?? "");
         alert(`Submit failed: ${msg.slice(0, 200)}`);

@@ -5,6 +5,7 @@ import Step2_Problem from "./pages/Step2_Problem";
 import Step3_Objectives from "./pages/Step3_Objectives";
 import Step4_Beneficiaries from "./pages/Step4_Beneficiaries";
 import Step5_Review from "./pages/Step5_Review";
+import Results from "./pages/Results";
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="/objectives" element={<Step3_Objectives />} />
         <Route path="/beneficiaries" element={<Step4_Beneficiaries />} />
         <Route path="/review" element={<Step5_Review />} />
+        <Route path="/results" element={<Results />} />
       </Routes>
     </FormProvider>
   );
