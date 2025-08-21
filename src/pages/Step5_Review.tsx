@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "../context/FormContext";
+import AppShell from "../ui/AppShell";
+import LiveOutline from "../ui/LiveOutline";
 
 export default function Step5_Review() {
   const nav = useNavigate();
@@ -30,12 +32,17 @@ export default function Step5_Review() {
   }
 
   return (
-    <div style={{ maxWidth: 960, margin: "60px auto", padding: 16 }}>
-      <h1>Concept Note Coach</h1>
-      <h2>Step 5 of 5 — Review & Submit</h2>
+    <AppShell
+      title="Concept Note Coach"
+      subtitle="Clean, donor-ready structure. Powered by your inputs."
+      step={5}
+      total={5}
+      outline={<LiveOutline />}
+    >
+      <h2 className="section-title">Step 5 of 5 — Review & Submit</h2>
 
       {/* Simple review block */}
-      <div style={{ padding: "12px 16px", border: "1px solid #ddd", borderRadius: 8, margin: "0 0 16px" }}>
+      <div className="card" style={{ padding: "16px 20px", margin: "0 0 24px" }}>
         <h3 style={{ marginTop: 0 }}>Please review your details</h3>
         <ul>
           <li><strong>Title:</strong> {data.title || "—"}</li>
@@ -61,14 +68,16 @@ export default function Step5_Review() {
         {/* Add more preview items as you like */}
       </div>
 
-      <div style={{ display: "flex", gap: 12 }}>
-        <button type="button" onClick={() => nav(-1)} disabled={busy} style={{ height: 44 }}>
-          ← Back
-        </button>
-        <button type="button" onClick={submit} disabled={busy} style={{ height: 44 }}>
-          {busy ? "Submitting…" : "Submit"}
-        </button>
+      <div style={{position:'sticky', bottom:-28, background:'linear-gradient(180deg, transparent 0%, rgba(2,6,23,.85) 40%)', paddingTop:16, marginTop:24}}>
+        <div style={{display:'flex', justifyContent:'space-between', gap:12}}>
+          <button type="button" className="btn btn-ghost" onClick={() => nav(-1)} disabled={busy}>
+            ← Back
+          </button>
+          <button type="button" className="btn btn-primary" onClick={submit} disabled={busy}>
+            {busy ? "Submitting…" : "Submit"}
+          </button>
+        </div>
       </div>
-    </div>
+    </AppShell>
   );
 }

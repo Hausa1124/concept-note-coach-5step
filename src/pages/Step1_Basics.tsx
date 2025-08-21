@@ -1,45 +1,55 @@
 import { useNavigate } from "react-router-dom";
 import { useForm } from "../context/FormContext";
+import AppShell from "../ui/AppShell";
+import LiveOutline from "../ui/LiveOutline";
 
 export default function Step1_Basics() {
   const nav = useNavigate();
   const { data, set } = useForm();
 
   return (
-    <div style={{ maxWidth: 960, margin: "60px auto", padding: 16 }}>
-      <h1>Concept Note Coach</h1>
-      <h2>Step 1 of 5 — Project Basics</h2>
+    <AppShell
+      title="Concept Note Coach"
+      subtitle="Clean, donor-ready structure. Powered by your inputs."
+      step={1}
+      total={5}
+      outline={<LiveOutline />}
+    >
+      <h2 className="section-title">Step 1 of 5 — Project Basics</h2>
 
       <form onSubmit={(e) => e.preventDefault()}>
-        <label>Project Title</label>
+        <label className="label">Project Title</label>
         <input
+          className="input"
           value={data.title ?? ""}
           onChange={(e) => set("title", e.target.value)}
           placeholder="e.g., Pineapple Value Chain Upgrade"
-          style={{ width: "100%", margin: "6px 0 18px", height: 36 }}
+          style={{ margin: "6px 0 18px" }}
         />
 
-        <label>Country &amp; Region</label>
+        <label className="label">Country & Region</label>
         <input
+          className="input"
           value={data.countryRegion ?? ""}
           onChange={(e) => set("countryRegion", e.target.value)}
           placeholder="e.g., Rwanda, Kigali Province"
-          style={{ width: "100%", margin: "6px 0 18px", height: 36 }}
+          style={{ margin: "6px 0 18px" }}
         />
 
-        <label>Implementing Organization</label>
+        <label className="label">Implementing Organization</label>
         <input
+          className="input"
           value={data.organization ?? ""}
           onChange={(e) => set("organization", e.target.value)}
           placeholder="e.g., E4Impact Foundation"
-          style={{ width: "100%", margin: "6px 0 18px", height: 36 }}
+          style={{ margin: "6px 0 18px" }}
         />
 
-        <label>Budget Range (USD)</label>
+        <label className="label">Budget Range (USD)</label>
         <select
           value={data.budget ?? ""}
           onChange={(e) => set("budget", e.target.value)}
-          style={{ width: "100%", margin: "6px 0 18px", height: 36 }}
+          style={{ margin: "6px 0 18px" }}
         >
           <option value="">Select budget range</option>
           <option>$0 - $50,000</option>
@@ -48,18 +58,23 @@ export default function Step1_Basics() {
           <option>$500,000+</option>
         </select>
 
-        <label>Duration (months)</label>
+        <label className="label">Duration (months)</label>
         <input
+          className="input"
           value={data.duration ?? ""}
           onChange={(e) => set("duration", e.target.value)}
           placeholder="e.g., 24"
-          style={{ width: "100%", margin: "6px 0 24px", height: 36 }}
+          style={{ margin: "6px 0 24px" }}
         />
 
-        <button type="button" onClick={() => nav("/problem")} style={{ height: 44 }}>
-          Next: Problem Analysis →
-        </button>
+        <div style={{position:'sticky', bottom:-28, background:'linear-gradient(180deg, transparent 0%, rgba(2,6,23,.85) 40%)', paddingTop:16, marginTop:24}}>
+          <div style={{display:'flex', justifyContent:'flex-end', gap:12}}>
+            <button type="button" className="btn btn-primary" onClick={() => nav("/problem")}>
+              Next: Problem Analysis →
+            </button>
+          </div>
+        </div>
       </form>
-    </div>
+    </AppShell>
   );
 }
